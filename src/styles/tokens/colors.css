@@ -1,0 +1,107 @@
+/* ============================================================
+   Kämpe Estates — Colour System
+   Definitive palette, June 2026 (KAMPE-ESTATES-BRANDGUIDE).
+   "Scandinavian precision, Mediterranean heritage."
+   A warm plaster ladder gives the Nordic calm; cypress, ochre
+   and majolica blue give the Italian warmth, heritage and trust.
+
+   Hard rules:
+   • One dominant accent per surface — cypress on lifestyle/property,
+     majolica blue on investor/finance. Never both as equals.
+   • Ochre is DETAIL only (eyebrow, one rule, one figure). Never a
+     large fill, never a third equal accent.
+   • NEVER red. Red signals sales pressure, breaks quiet luxury.
+   • Pure white (#FFFFFF) is never used — the canvas is warm.
+   • Burgundy & terracotta are retired (burgundy only for heavy
+     financial collateral, otherwise dropped).
+   ============================================================ */
+
+:root {
+  /* ---- Warm neutral ladder (lightest → warmest panel) ---- */
+  --canvas: #FAF8F3;     /* page — warm near-white, the lightest step */
+  --plaster: #ECE6DB;    /* alternating sections — a light step under canvas */
+  --travertine: #E2D8C6; /* cards, sidebars, stat blocks */
+
+  /* ---- Ink / text ---- */
+  --ink: #23211C;        /* primary — warm near-black, titles & body */
+  --ink-secondary: #4A463E; /* longer body copy */
+  --ink-muted: #6B6457;  /* captions, labels, metadata */
+
+  /* ---- Accents ---- */
+  --cypress: #36463B;        /* ACCENT 1 — primary. Lifestyle, property, heritage */
+  --cypress-anchor: #2E3A30; /* deep green anchor — full-width hero/contact, light text on it */
+  --majolica: #3A5566;       /* ACCENT 2 — investor/finance. Trust & discretion (replaces burgundy) */
+  --ochre: #C68A3C;          /* ACCENT 3 — DETAIL ONLY. Eyebrow, one rule, one figure */
+
+  /* Deeper steps for hovers / pressed states */
+  --cypress-700: #2A382E;
+  --majolica-700: #2F4453;
+
+  /* ---- Hairlines / borders ---- */
+  --line: #CFC4AE;       /* visible dividers, image frames */
+  --line-subtle: #E0DACB;/* table rules, weak section dividers */
+
+  /* ---- Status / data utility (report dashboard only) ---- */
+  --success: #36463B;        /* uses cypress family — "auto-fetched" */
+  --success-bg: #EDF0EA;
+  --success-line: #C4D0BF;
+  --warning: #C68A3C;        /* ochre — "manual / fallback" */
+  --warning-bg: #FAF1E2;
+  --warning-line: #E7CFA6;
+  --info: #3A5566;           /* majolica — "override / notice" */
+  --info-bg: #E8EDF1;
+  --info-line: #BFCDD6;
+  --danger: #8A4B3A;         /* muted terracotta-brown — errors only, never bright red */
+  --danger-bg: #F4E9E4;
+  --danger-line: #DCC3B8;
+
+  /* ---- Pure white reserved for print/photography edges only ---- */
+  --paper-edge: #FFFFFF;
+
+  /* ============================================================
+     Semantic aliases — prefer these in components
+     ============================================================ */
+  --accent: var(--cypress);
+  --accent-hover: var(--cypress-700);
+  --accent-anchor: var(--cypress-anchor);
+  --accent-finance: var(--majolica);
+  --accent-detail: var(--ochre);
+
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-secondary);
+  --text-muted: var(--ink-muted);
+  --text-heading: var(--ink);
+  --text-link: var(--cypress);
+  --text-on-dark: var(--canvas);
+  --text-on-dark-soft: rgba(250, 248, 243, 0.6);
+
+  --surface-page: var(--canvas);
+  --surface-panel: var(--plaster);
+  --surface-card: var(--travertine);
+
+  --border-default: var(--line);
+  --border-subtle: var(--line-subtle);
+
+  --figure-accent: var(--cypress);
+  --figure-finance: var(--majolica);
+}
+
+/* ------------------------------------------------------------
+   Surface temperature scopes — flip the dominant accent per
+   page WITHOUT touching base/text/type. Wrap a page region in
+   one of these to retune every --accent-* consumer beneath it.
+   ------------------------------------------------------------ */
+.surface-warm {           /* About, lifestyle, regions, viewings */
+  --accent: var(--cypress);
+  --accent-hover: var(--cypress-700);
+  --accent-anchor: var(--cypress-anchor);
+  --text-link: var(--cypress);
+  --figure-accent: var(--cypress);
+}
+.surface-cool {           /* Investment, investor, market data, finance */
+  --accent: var(--majolica);
+  --accent-hover: var(--majolica-700);
+  --accent-anchor: var(--majolica);
+  --text-link: var(--majolica);
+  --figure-accent: var(--majolica);
+}

@@ -1,0 +1,56 @@
+/* ============================================================
+   Kämpe Estates — Spacing, Radius, Shadow, Layout
+   The brand is square and editorial: corners are sharp (radius
+   ~0–2px), elevation is almost flat, structure comes from
+   hairline rules and generous whitespace — not from rounding
+   or drop-shadows.
+   ============================================================ */
+
+:root {
+  /* ---- Spacing scale (4px base) ---- */
+  --space-0: 0;
+  --space-1: 0.25rem;  /* 4 */
+  --space-2: 0.5rem;   /* 8 */
+  --space-3: 0.75rem;  /* 12 */
+  --space-4: 1rem;     /* 16 */
+  --space-5: 1.25rem;  /* 20 */
+  --space-6: 1.5rem;   /* 24 */
+  --space-8: 2rem;     /* 32 */
+  --space-10: 2.5rem;  /* 40 */
+  --space-12: 3rem;    /* 48 — section gutters */
+  --space-16: 4rem;    /* 64 */
+
+  /* ---- Radius — intentionally minimal ---- */
+  --radius-none: 0;      /* default for cards, buttons, inputs */
+  --radius-sm: 2px;      /* subtle softening on small chips/badges */
+  --radius-pill: 9999px; /* status dots, check circles ONLY */
+
+  /* ---- Borders ---- */
+  --border-width: 1px;
+  --border-hairline: 1px solid var(--line-subtle);
+  --border-line: 1px solid var(--line);
+  --rule-accent: 2px solid var(--accent); /* top-rule on data callouts */
+  --bar-accent-h: 4px;   /* accent bar (hero / report card / footer) */
+
+  /* ---- Shadow — near-flat ---- */
+  --shadow-none: none;
+  --shadow-card: 0 1px 2px rgba(35, 33, 28, 0.05); /* white-on-white cards only */
+  --shadow-raised: 0 10px 30px rgba(35, 33, 28, 0.10); /* modals only */
+
+  /* ---- Layout ---- */
+  --container-max: 80rem;   /* 1280 — dashboard max-w-7xl */
+  --container-prose: 48rem; /* report column */
+  --sidebar-w: 20rem;       /* 320 — dashboard right rail */
+  --header-h: 3.5rem;       /* 56 — sticky top bar */
+
+  /* ---- Motion ---- */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1); /* @kind other */
+  --dur-fast: 150ms; /* @kind other */
+  --dur-base: 200ms; /* @kind other */
+
+  /* ---- Social post canvases (Instagram) ---- */
+  --post-square: 1080px;   /* 1:1 feed */
+  --post-portrait-w: 1080px;
+  --post-portrait-h: 1350px; /* 4:5 feed */
+  --post-reel-h: 1920px;     /* 9:16 reel / story */
+}

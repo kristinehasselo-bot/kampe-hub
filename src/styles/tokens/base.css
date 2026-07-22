@@ -1,0 +1,87 @@
+/* ============================================================
+   Kämpe Estates — Base layer
+   Light, opinionated defaults so a blank page already reads as
+   the brand: cream ground, ink text, serif headings, sans body.
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--canvas);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-light);
+  color: var(--text-heading);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-display);
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  transition: opacity var(--dur-base) var(--ease-standard);
+}
+a:hover {
+  opacity: 0.7;
+}
+
+/* Selection takes the cypress tint */
+::selection {
+  background: rgba(54, 70, 59, 0.16);
+}
+
+/* Thin, sand-coloured scrollbars to match the editorial chrome */
+.ke-scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.ke-scroll-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.ke-scroll-thin::-webkit-scrollbar-thumb {
+  background-color: var(--line);
+  border-radius: var(--radius-pill);
+}
+
+/* Reusable uppercase eyebrow / section label */
+.section-label {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Hairline divider */
+.divider {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 0;
+}

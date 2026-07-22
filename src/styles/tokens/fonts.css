@@ -1,0 +1,19 @@
+/* ============================================================
+   Kämpe Estates — Webfonts
+   Cormorant Garamond (display serif) + Inter (UI / body sans)
+   Loaded from Google Fonts, matching the production codebase
+   (next/font/google). If you self-host, swap the @import for
+   local @font-face rules pointing at the binaries.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Family stacks — reference these, never the raw family name */
+  --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Semantic aliases */
+  --font-display: var(--font-serif); /* headings, titles, big numbers */
+  --font-body: var(--font-sans);     /* paragraphs, UI, labels */
+}
