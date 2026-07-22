@@ -1,15 +1,19 @@
 import { useCallback, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useQuery } from '../lib/useQuery'
-import type { Mandate, Property } from '../lib/types'
+import { usePeriod } from '../period/PeriodContext'
+import type { Mandate, Property, TimeLog } from '../lib/types'
 import { DUE_SOON_DAYS } from '../lib/constants'
 import { daysUntil, formatDate, formatEur } from '../lib/dates'
 import { StageTimeline } from '../components/StageTimeline'
 import { MandateForm } from '../components/MandateForm'
+import { MandatesByStage } from '../components/charts/MandatesByStage'
+import { BizDevVsClients } from '../components/charts/BizDevVsClients'
 
 export function Kunder() {
   const [editing, setEditing] = useState<Mandate | null>(null)
   const [formOpen, setFormOpen] = useState(false)
+  const { range } = usePeriod()
 
   const mandates = useQuery<Mandate>(
     useCallback(
@@ -28,9 +32,25 @@ export function Kunder() {
     ),
   )
 
+  // Kun timene i forretningsutvikling, og kun i valgt periode.
+  const bizDevHours = useQuery<TimeLog>(
+    useCallback(
+      () =>
+        supabase
+          .from('time_logs')
+          .select('*')
+          .eq('bucket', 'biz_dev')
+          .gte('date', range.from)
+          .lte('date', range.to),
+      [range.from, range.to],
+    ),
+    [range.from, range.to],
+  )
+
   function refresh() {
     mandates.refresh()
     properties.refresh()
+    bizDevHours.refresh()
   }
 
   function openNew() {
@@ -54,6 +74,28 @@ export function Kunder() {
           Nytt mandat
         </button>
       </header>
+
+      <div className="split">
+        <section className="panel">
+          <header className="panel__head">
+            <p className="section-label">Mandater etter fase</p>
+            <p className="panel__aside">{mandates.rows.length} totalt</p>
+          </header>
+          <MandatesByStage rows={mandates.rows} />
+        </section>
+
+        <section className="panel">
+          <header className="panel__head">
+            <p className="section-label">Timer mot resultat</p>
+            <p className="panel__aside">{range.label}</p>
+          </header>
+          <BizDevVsClients
+            hours={bizDevHours.rows}
+            mandates={mandates.rows}
+            range={range}
+          />
+        </section>
+      </div>
 
       {mandates.loading && <p className="muted">Henter</p>}
 

@@ -3,6 +3,7 @@ import { Priorities } from '../components/Priorities'
 import { QuickLog } from '../components/QuickLog'
 import { KeyFigures } from '../components/KeyFigures'
 import { LinkGrid } from '../components/LinkGrid'
+import { Countdown } from '../components/charts/Countdown'
 
 export function Home() {
   // Bumpes når hurtigloggen lagrer, så nøkkeltallene henter på nytt.
@@ -15,6 +16,7 @@ export function Home() {
         <Priorities />
         <QuickLog onSaved={() => setRefreshKey((n) => n + 1)} />
       </div>
+      <Countdown />
       <LinkGrid />
     </div>
   )

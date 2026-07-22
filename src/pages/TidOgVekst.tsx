@@ -1,29 +1,40 @@
 import { useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { useQuery } from '../lib/useQuery'
+import { usePeriod } from '../period/PeriodContext'
 import type { GrowthLog, TimeLog } from '../lib/types'
-import {
-  BUCKETS,
-  CONTENT_CAP_HOURS_PER_WEEK,
-  GROWTH_ITEMS,
-} from '../lib/constants'
-import { formatHours, toISODate, weekStart } from '../lib/dates'
+import { BUCKETS, CONTENT_CAP_HOURS_PER_WEEK } from '../lib/constants'
+import { formatHours } from '../lib/dates'
+import { HoursStacked } from '../components/charts/HoursStacked'
+import { GrowthStreak } from '../components/charts/GrowthStreak'
 
-/**
- * Lean utgave for fase 2. Tallene er ekte, men grafene og
- * periodebryteren kommer i fase 3.
- */
 export function TidOgVekst() {
-  const from = toISODate(weekStart())
+  const { range } = usePeriod()
 
   const time = useQuery<TimeLog>(
-    useCallback(() => supabase.from('time_logs').select('*').gte('date', from), [from]),
-    [from],
+    useCallback(
+      () =>
+        supabase
+          .from('time_logs')
+          .select('*')
+          .gte('date', range.from)
+          .lte('date', range.to),
+      [range.from, range.to],
+    ),
+    [range.from, range.to],
   )
 
   const growth = useQuery<GrowthLog>(
-    useCallback(() => supabase.from('growth_log').select('*').gte('date', from), [from]),
-    [from],
+    useCallback(
+      () =>
+        supabase
+          .from('growth_log')
+          .select('*')
+          .gte('date', range.from)
+          .lte('date', range.to),
+      [range.from, range.to],
+    ),
+    [range.from, range.to],
   )
 
   const perBucket = BUCKETS.map((b) => ({
@@ -34,16 +45,12 @@ export function TidOgVekst() {
   }))
 
   const total = perBucket.reduce((sum, b) => sum + b.hours, 0)
-  const max = Math.max(...perBucket.map((b) => b.hours), 1)
   const contentHours = perBucket.find((b) => b.key === 'content')?.hours ?? 0
+  const weeks = Math.max(1, Math.round((total > 0 ? countWeeks(range.from, range.to) : 1)))
+  const contentPerWeek = contentHours / weeks
   const travelDays = new Set(
     time.rows.filter((r) => r.bucket === 'travel' && Number(r.hours) > 0).map((r) => r.date),
   ).size
-
-  const growthDone = GROWTH_ITEMS.map((item) => ({
-    ...item,
-    days: growth.rows.filter((r) => r.item === item.key && r.done).length,
-  }))
 
   return (
     <div className="stack surface-warm">
@@ -56,31 +63,21 @@ export function TidOgVekst() {
 
       <section className="panel">
         <header className="panel__head">
-          <p className="section-label">Timer denne uken</p>
-          <p className="panel__aside">{formatHours(total)} totalt</p>
+          <p className="section-label">Timer per bucket</p>
+          <p className="panel__aside">{formatHours(total)} timer totalt</p>
         </header>
 
-        {time.loading && <p className="muted">Henter</p>}
-
-        <ul className="bars">
-          {perBucket.map((b) => (
-            <li key={b.key} className="bar">
-              <span className="bar__label">{b.label}</span>
-              <span className="bar__track">
-                <span
-                  className={b.key === 'content' ? 'bar__fill bar__fill--capped' : 'bar__fill'}
-                  style={{ width: `${(b.hours / max) * 100}%` }}
-                />
-              </span>
-              <span className="bar__value">{formatHours(b.hours)}</span>
-            </li>
-          ))}
-        </ul>
+        {time.loading ? (
+          <p className="muted">Henter</p>
+        ) : (
+          <HoursStacked rows={time.rows} range={range} />
+        )}
 
         <p className="muted bar__note">
-          Tak på innhold: {CONTENT_CAP_HOURS_PER_WEEK} timer i uken. Du ligger på{' '}
-          <span className={contentHours > CONTENT_CAP_HOURS_PER_WEEK ? 'flag' : undefined}>
-            {formatHours(contentHours)}
+          Tak på innhold: {CONTENT_CAP_HOURS_PER_WEEK} timer i uken. Snittet i denne
+          perioden er{' '}
+          <span className={contentPerWeek > CONTENT_CAP_HOURS_PER_WEEK ? 'flag' : undefined}>
+            {formatHours(contentPerWeek)}
           </span>
           .
         </p>
@@ -89,19 +86,13 @@ export function TidOgVekst() {
       <div className="split">
         <section className="panel">
           <header className="panel__head">
-            <p className="section-label">Vekst denne uken</p>
+            <p className="section-label">Vekststreak</p>
           </header>
-          <ul className="bars">
-            {growthDone.map((g) => (
-              <li key={g.key} className="bar">
-                <span className="bar__label">{g.label}</span>
-                <span className="bar__track">
-                  <span className="bar__fill" style={{ width: `${(g.days / 7) * 100}%` }} />
-                </span>
-                <span className="bar__value">{g.days} av 7</span>
-              </li>
-            ))}
-          </ul>
+          {growth.loading ? (
+            <p className="muted">Henter</p>
+          ) : (
+            <GrowthStreak rows={growth.rows} range={range} />
+          )}
         </section>
 
         <section className="panel">
@@ -109,9 +100,17 @@ export function TidOgVekst() {
             <p className="section-label">Reise</p>
           </header>
           <p className="figure__value">{travelDays}</p>
-          <p className="figure__unit">reisedager denne uken</p>
+          <p className="figure__unit">reisedager i perioden</p>
         </section>
       </div>
     </div>
   )
+}
+
+function countWeeks(from: string, to: string) {
+  const [fy, fm, fd] = from.split('-').map(Number)
+  const [ty, tm, td] = to.split('-').map(Number)
+  const days =
+    (new Date(ty, tm - 1, td).getTime() - new Date(fy, fm - 1, fd).getTime()) / 86_400_000 + 1
+  return days / 7
 }

@@ -1,13 +1,22 @@
 import { useState, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider'
 import { formatWeekday, today } from '../lib/dates'
 import { Nav } from './Nav'
 import { AccountForm } from './AccountForm'
+import { PeriodSwitcher } from '../period/PeriodSwitcher'
+
+/**
+ * Sidene som faktisk summerer over en periode. Bryteren vises bare
+ * der, så hun aldri sitter med en kontroll som ikke gjør noe.
+ */
+const PERIOD_PAGES = ['/jobb/kunder', '/jobb/innhold', '/jobb/okonomi', '/privat/tid']
 
 export function Layout({ children }: { children: ReactNode }) {
   const { signOut } = useAuth()
   const [accountOpen, setAccountOpen] = useState(false)
+  const { pathname } = useLocation()
+  const showPeriod = PERIOD_PAGES.includes(pathname)
 
   return (
     <div className="shell">
@@ -30,6 +39,7 @@ export function Layout({ children }: { children: ReactNode }) {
           </button>
         </div>
         <Nav />
+        {showPeriod && <PeriodSwitcher />}
       </header>
 
       <main className="content">{children}</main>

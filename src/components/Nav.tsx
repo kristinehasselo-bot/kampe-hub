@@ -10,6 +10,8 @@ const SUB: Record<string, { to: string; label: string }[]> = {
   '/jobb': [
     { to: '/jobb/kunder', label: 'Kunder' },
     { to: '/jobb/admin', label: 'Admin og milepæler' },
+    { to: '/jobb/innhold', label: 'Innhold' },
+    { to: '/jobb/okonomi', label: 'Økonomi' },
     { to: '/jobb/oppgaver', label: 'Oppgaver' },
   ],
   '/privat': [

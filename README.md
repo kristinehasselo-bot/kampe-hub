@@ -85,7 +85,7 @@ Fargene og typografien kommer fra designsystemet i
 
 - [x] Fase 1, base. Innlogging, tabeller, Hjem med hurtiglogg, nøkkeltall og lenker.
 - [x] Fase 2, struktur. Oppgaver, mandater, milepæler, fanene Jobb og Privat.
-- [ ] Fase 3, grafer. Periodebryter og alle grafene.
+- [x] Fase 3, grafer. Periodebryter og alle grafene.
 - [ ] Fase 4, Claude inn. De fem oppgavene skriver til Supabase.
 - [ ] Fase 5, innhold og økonomi.
 - [ ] Fase 6, automatikk. GitHub Actions for valutakurs og nedtellinger.
