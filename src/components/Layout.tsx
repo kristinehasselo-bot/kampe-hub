@@ -1,11 +1,13 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider'
 import { formatWeekday, today } from '../lib/dates'
 import { Nav } from './Nav'
+import { AccountForm } from './AccountForm'
 
 export function Layout({ children }: { children: ReactNode }) {
   const { signOut } = useAuth()
+  const [accountOpen, setAccountOpen] = useState(false)
 
   return (
     <div className="shell">
@@ -16,6 +18,13 @@ export function Layout({ children }: { children: ReactNode }) {
             <span className="wordmark wordmark--em">Hub</span>
           </Link>
           <p className="topbar__date">{formatWeekday(today())}</p>
+          <button
+            type="button"
+            className="button button--quiet"
+            onClick={() => setAccountOpen(true)}
+          >
+            Konto
+          </button>
           <button type="button" className="button button--quiet" onClick={signOut}>
             Logg ut
           </button>
@@ -28,6 +37,8 @@ export function Layout({ children }: { children: ReactNode }) {
       <footer className="footer">
         <p className="muted">Fase 2. Grafer, innhold og økonomi kommer i senere faser.</p>
       </footer>
+
+      {accountOpen && <AccountForm onClose={() => setAccountOpen(false)} />}
     </div>
   )
 }

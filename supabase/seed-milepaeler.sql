@@ -1,18 +1,31 @@
 -- ============================================================
 -- Kämpe Hub, milepælene som er fremhevet i kravspesifikasjonen.
--- Kjøres i SQL Editor mens du er innlogget, etter schema.sql.
+-- Kjøres i SQL Editor etter schema.sql.
 --
--- Frister og blokkeringer er satt til det spesifikasjonen sier, og
--- der den ikke sier noe står feltet tomt. Rediger dem i appen, ikke her.
+-- VIKTIG: SQL Editor kjører som rollen postgres, ikke som deg som
+-- innlogget bruker. auth.uid() er derfor NULL her inne, og triggeren
+-- som ellers fyller user_id automatisk har ingenting å fylle med.
+-- Derfor slår denne filen opp bruker-id-en din eksplisitt.
+--
+-- Logget du inn med en annen adresse, bytt den ut under.
+--
+-- Trygg å kjøre flere ganger. Rader som allerede finnes hoppes over.
 -- ============================================================
 
-insert into public.milestones (title, category, status, due_date, blocker, owner, notes) values
+with me as (
+  select id from auth.users where email = 'kristine@kampeestates.com'
+)
+insert into public.milestones
+  (user_id, title, category, status, due_date, blocker, owner, notes)
+select me.id, v.title, v.category, v.status, v.due_date, v.blocker, v.owner, v.notes
+from me
+cross join (values
   (
     'P.IVA-registrering',
     'P.IVA',
     'åpen',
-    null,
-    null,
+    null::date,
+    null::text,
     'commercialista',
     'Forutsetning for å fakturere. Alt annet i økonomisporet henger på denne.'
   ),
@@ -20,8 +33,8 @@ insert into public.milestones (title, category, status, due_date, blocker, owner
     'FIF Sezione G',
     'FIF',
     'åpen',
-    null,
-    null,
+    null::date,
+    null::text,
     'Kristine',
     'Registrering i meglerregisteret. Kreves for å ta mandat i eget navn.'
   ),
@@ -29,8 +42,8 @@ insert into public.milestones (title, category, status, due_date, blocker, owner
     'Carlos gjennomgang av oppdragsavtalen',
     'juridisk',
     'åpen',
-    null,
-    null,
+    null::date,
+    null::text,
     'Carlo',
     'Standard oppdragsavtale må være juridisk gjennomgått før neste mandat signeres.'
   ),
@@ -38,8 +51,18 @@ insert into public.milestones (title, category, status, due_date, blocker, owner
     'Impatriati',
     'skatt',
     'åpen',
-    null,
+    null::date,
     'Krever registrert residenza',
     'commercialista',
-    'Tidssensitiv. Fristen løper mot datoen residenza faktisk blir registrert, ikke mot søknadsdatoen. Sett due_date så snart residenza-datoen er kjent.'
-  );
+    'Tidssensitiv. Fristen løper mot datoen residenza faktisk blir registrert, ikke mot søknadsdatoen. Sett frist så snart residenza-datoen er kjent.'
+  )
+) as v(title, category, status, due_date, blocker, owner, notes)
+where not exists (
+  select 1 from public.milestones m
+  where m.user_id = me.id and m.title = v.title
+);
+
+-- Kontroll. Forventet: 4 etter første kjøring.
+select count(*) as milepaeler_lagt_inn
+from public.milestones
+where user_id = (select id from auth.users where email = 'kristine@kampeestates.com');

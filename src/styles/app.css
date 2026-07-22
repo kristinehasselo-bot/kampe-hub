@@ -993,6 +993,10 @@
   line-height: var(--leading-body);
 }
 
+.login__modes {
+  margin: var(--space-5) 0 var(--space-4);
+}
+
 .login__form {
   display: flex;
   flex-direction: column;
