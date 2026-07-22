@@ -1,0 +1,10 @@
+# Kämpe Hub, Supabase-konfigurasjon
+
+project_id = "kampe-hub"
+
+[functions.hub]
+# Endepunktet gjør sin egen autentisering med smale oppgavetokens.
+# Supabase sin JWT-sjekk må derfor være av, ellers ville oppgavene
+# måttet sende en Supabase-nøkkel i tillegg, og det er nettopp det
+# vi prøver å unngå.
+verify_jwt = false

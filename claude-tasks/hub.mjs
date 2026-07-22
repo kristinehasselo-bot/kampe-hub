@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 /**
- * Kämpe Hub, skrivebro for de schedulerte Claude-oppgavene.
+ * Kämpe Hub, kommandolinjeverktøy mot basen.
  *
- * Hele poenget: service role-nøkkelen skal finnes ett sted, ikke i fem
- * prompt-tekster. Oppgavene kaller dette skriptet, skriptet snakker med
- * Supabase. Nøkkelen skrives aldri ut, heller ikke i feilmeldinger.
+ * IKKE for de schedulerte oppgavene. De kjører inne i claude.ai, kan
+ * hverken starte en prosess eller nå dette filsystemet, og skal bruke
+ * Edge Function-endepunktet i supabase/functions/hub med sitt eget
+ * smale token. Se claude-tasks/README.md.
+ *
+ * Dette skriptet er for lokal bruk og for GitHub Actions i fase 6, der
+ * service role-nøkkelen kan ligge som repo-hemmelighet og aldri passerer
+ * gjennom en prompt. Nøkkelen skrives aldri ut, heller ikke i feilmeldinger.
  *
  * Nøkkelen leses fra, i denne rekkefølgen:
  *   1. miljøvariabelen SUPABASE_SERVICE_ROLE_KEY

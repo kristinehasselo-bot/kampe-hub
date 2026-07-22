@@ -76,10 +76,15 @@ supabase/
   schema.sql        tabeller, RLS, indekser
   schema-fase4.sql  eierrad, så de schedulerte oppgavene kan skrive
   seed.sql          lenker og mål
+  functions/hub/    smalt skriveendepunkt for claude.ai-oppgavene
 claude-tasks/
-  hub.mjs           skrivebroen. Eneste sted service role-nøkkelen brukes
   1- til 5-*.md     de fem promptene, én fil per schedulert oppgave
+  hub.mjs           kommandolinje for lokal bruk og GitHub Actions
 ```
+
+De schedulerte oppgavene skriver aldri rett i basen. De går gjennom Edge
+Function-endepunktet med hvert sitt smale token, så service role-nøkkelen
+aldri forlater Supabase. Se [claude-tasks/README.md](claude-tasks/README.md).
 
 Fargene og typografien kommer fra designsystemet i
 `Brand/k-mpe-estates-design-system`. Endres paletten der, kopieres
