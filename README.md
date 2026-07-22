@@ -73,8 +73,12 @@ src/
     tokens/     kopi av Kämpe-designsystemet, endres ikke her
     app.css     applayeret, bygger kun på tokens
 supabase/
-  schema.sql    tabeller, RLS, indekser
-  seed.sql      lenker og mål
+  schema.sql        tabeller, RLS, indekser
+  schema-fase4.sql  eierrad, så de schedulerte oppgavene kan skrive
+  seed.sql          lenker og mål
+claude-tasks/
+  hub.mjs           skrivebroen. Eneste sted service role-nøkkelen brukes
+  1- til 5-*.md     de fem promptene, én fil per schedulert oppgave
 ```
 
 Fargene og typografien kommer fra designsystemet i
@@ -86,6 +90,6 @@ Fargene og typografien kommer fra designsystemet i
 - [x] Fase 1, base. Innlogging, tabeller, Hjem med hurtiglogg, nøkkeltall og lenker.
 - [x] Fase 2, struktur. Oppgaver, mandater, milepæler, fanene Jobb og Privat.
 - [x] Fase 3, grafer. Periodebryter og alle grafene.
-- [ ] Fase 4, Claude inn. De fem oppgavene skriver til Supabase.
+- [x] Fase 4, Claude inn. De fem oppgavene skriver til Supabase.
 - [ ] Fase 5, innhold og økonomi.
 - [ ] Fase 6, automatikk. GitHub Actions for valutakurs og nedtellinger.
