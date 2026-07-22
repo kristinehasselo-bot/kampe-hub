@@ -29,6 +29,8 @@ Service role-nøkkelen skal aldri inn i dette repoet.
 
 1. Supabase, SQL Editor, ny query, lim inn `supabase/schema.sql`, kjør.
 2. Samme sted, lim inn `supabase/seed.sql`, rediger lenkene, kjør.
+3. `supabase/seed-milepaeler.sql` legger inn P.IVA, FIF Sezione G,
+   oppdragsavtalen og Impatriati på Admin-siden.
 
 `schema.sql` kan kjøres på nytt uten å ødelegge data.
 
@@ -82,7 +84,7 @@ Fargene og typografien kommer fra designsystemet i
 ## Faser
 
 - [x] Fase 1, base. Innlogging, tabeller, Hjem med hurtiglogg, nøkkeltall og lenker.
-- [ ] Fase 2, struktur. Oppgaver, mandater, milepæler, fanene Jobb og Privat.
+- [x] Fase 2, struktur. Oppgaver, mandater, milepæler, fanene Jobb og Privat.
 - [ ] Fase 3, grafer. Periodebryter og alle grafene.
 - [ ] Fase 4, Claude inn. De fem oppgavene skriver til Supabase.
 - [ ] Fase 5, innhold og økonomi.
