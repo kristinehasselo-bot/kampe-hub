@@ -9,7 +9,7 @@ export function Home() {
   const [refreshKey, setRefreshKey] = useState(0)
 
   return (
-    <div className="stack">
+    <div className="stack surface-warm">
       <KeyFigures refreshKey={refreshKey} />
       <div className="split">
         <Priorities />
