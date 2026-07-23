@@ -7,12 +7,14 @@ import { DUE_SOON_DAYS } from '../lib/constants'
 import { daysUntil, formatDate, formatEur } from '../lib/dates'
 import { StageTimeline } from '../components/StageTimeline'
 import { MandateForm } from '../components/MandateForm'
+import { PropertyPicker } from '../components/PropertyPicker'
 import { MandatesByStage } from '../components/charts/MandatesByStage'
 import { BizDevVsClients } from '../components/charts/BizDevVsClients'
 
 export function Kunder() {
   const [editing, setEditing] = useState<Mandate | null>(null)
   const [formOpen, setFormOpen] = useState(false)
+  const [pickerFor, setPickerFor] = useState<Mandate | null>(null)
   const { range } = usePeriod()
 
   const mandates = useQuery<Mandate>(
@@ -176,9 +178,23 @@ export function Kunder() {
                 )}
               </dl>
 
-              {shortlist.length > 0 && (
-                <div className="shortlist">
+              <div className="shortlist">
+                <div className="shortlist__head">
                   <p className="section-label">Shortlist</p>
+                  <button
+                    type="button"
+                    className="button button--quiet button--small"
+                    onClick={() => setPickerFor(m)}
+                  >
+                    Legg til eiendom
+                  </button>
+                </div>
+
+                {shortlist.length === 0 && (
+                  <p className="muted">Ingen eiendommer knyttet til dette mandatet enda.</p>
+                )}
+
+                {shortlist.length > 0 && (
                   <ul className="shortlist__list">
                     {shortlist.map((p) => (
                       <li key={p.id} className="shortlist__item">
@@ -204,8 +220,8 @@ export function Kunder() {
                       </li>
                     ))}
                   </ul>
-                </div>
-              )}
+                )}
+              </div>
 
               {m.notes && <p className="mandate__notes">{m.notes}</p>}
 
@@ -224,6 +240,14 @@ export function Kunder() {
           mandate={editing}
           onClose={() => setFormOpen(false)}
           onSaved={refresh}
+        />
+      )}
+
+      {pickerFor && (
+        <PropertyPicker
+          mandate={pickerFor}
+          onClose={() => setPickerFor(null)}
+          onSaved={() => properties.refresh()}
         />
       )}
     </div>

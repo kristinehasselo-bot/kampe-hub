@@ -1034,6 +1034,61 @@
   border-top: var(--border-hairline);
 }
 
+.shortlist__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.button--small {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+}
+
+/* ---------- Eiendomsvelger ---------- */
+
+.picker {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  max-height: 22rem;
+  overflow-y: auto;
+}
+
+.picker__status {
+  margin-top: var(--space-5);
+}
+
+.picker__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: var(--border-hairline);
+}
+
+.picker__body {
+  min-width: 0;
+}
+
+.picker__title {
+  display: block;
+  font-size: var(--text-base);
+  color: var(--ink);
+}
+
+.picker__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
 .shortlist__list {
   list-style: none;
   margin: var(--space-3) 0 0;
