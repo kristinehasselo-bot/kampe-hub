@@ -293,6 +293,39 @@ async function goal(json) {
   output(await upsert('goals', 'user_id,name', [row]))
 }
 
+/**
+ * Henter dagens EUR/NOK fra frankfurter.app, som leverer ECB-kurser
+ * gratis og uten nøkkel, og skriver den til rates. Kjøres av en GitHub
+ * Action, ikke av Claude. Upsert på par og dato, så gjentatt kjøring
+ * samme dag retter i stedet for å duplisere.
+ */
+async function rate() {
+  const url = 'https://api.frankfurter.app/latest?from=EUR&to=NOK'
+  let data
+  try {
+    const res = await fetch(url)
+    if (!res.ok) die(`Valutakilden svarte ${res.status}`)
+    data = await res.json()
+  } catch (err) {
+    die(`Kunne ikke hente kurs: ${err instanceof Error ? err.message : err}`)
+  }
+
+  const value = data?.rates?.NOK
+  if (typeof value !== 'number' || !(value > 0)) {
+    die(`Uventet svar fra valutakilden: ${JSON.stringify(data)}`)
+  }
+
+  // Bruk datoen kilden oppgir (ECB publiserer ikke i helger), ikke
+  // dagens dato, så helgekjøringer ikke skriver en fredag som lørdag.
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(data.date ?? '') ? data.date : iso(new Date())
+
+  output(
+    await upsert('rates', 'user_id,date,base,quote', [
+      { date, base: 'EUR', quote: 'NOK', rate: value },
+    ]),
+  )
+}
+
 // ---------- Kjøring ----------
 
 const [, , command, payload] = process.argv
@@ -306,6 +339,7 @@ const commands = {
   'plan:recent': () => planRecent(),
   'plan:setreach': () => planSetReach(payload),
   goal: () => goal(payload),
+  rate: () => rate(),
 }
 
 try {

@@ -1,0 +1,30 @@
+name: Valutakurs EUR/NOK
+
+# Henter dagens ECB-kurs og skriver den til Supabase. Trenger ikke Claude.
+# Kjører hver morgen, og kan startes manuelt fra Actions-fanen.
+on:
+  schedule:
+    # 06:00 UTC, etter at ECB har publisert forrige virkedags kurs.
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+# Kun én kjøring om gangen, og en ny avbryter ikke en pågående.
+concurrency:
+  group: rate
+  cancel-in-progress: false
+
+jobs:
+  rate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Skriv EUR/NOK til Supabase
+        run: node claude-tasks/hub.mjs rate
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

@@ -4,7 +4,8 @@ import { useQuery } from '../lib/useQuery'
 import { usePeriod } from '../period/PeriodContext'
 import type { Goal, Invoice, Mandate } from '../lib/types'
 import { REVENUE_GOAL_FLOOR_EUR, REVENUE_GOAL_NAME } from '../lib/constants'
-import { daysUntil, formatDate, formatEur, toISODate } from '../lib/dates'
+import { daysUntil, formatDate, formatEur, formatNok, toISODate } from '../lib/dates'
+import { useLatestRate } from '../lib/useRate'
 import { RevenueProgress } from '../components/charts/RevenueProgress'
 import { ForfettarioMeter } from '../components/finance/ForfettarioMeter'
 import { InvoiceForm } from '../components/finance/InvoiceForm'
@@ -52,6 +53,8 @@ export function Okonomi() {
     useCallback(() => supabase.from('mandates').select('*'), []),
   )
 
+  const rate = useLatestRate()
+
   const invoiced = invoices.rows.reduce((sum, i) => sum + Number(i.amount_eur ?? 0), 0)
   const paid = invoices.rows
     .filter((i) => i.status === 'betalt')
@@ -98,6 +101,13 @@ export function Okonomi() {
             <p className="muted">Henter</p>
           ) : (
             <RevenueProgress invoiced={invoiced} paid={paid} goal={goal} />
+          )}
+          {rate && invoiced > 0 && (
+            <p className="muted rate-note">
+              ≈ {formatNok(invoiced * Number(rate.rate))} med dagens kurs, 1 EUR ={' '}
+              {Number(rate.rate).toLocaleString('nb-NO', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}{' '}
+              NOK, {formatDate(rate.date)}
+            </p>
           )}
         </section>
 

@@ -163,6 +163,16 @@ export type ContentPlanItem = {
   engagement_rate: number | null
 }
 
+export type Rate = {
+  id: string
+  user_id: string
+  created_at: string
+  date: string
+  base: string
+  quote: string
+  rate: number
+}
+
 export type Property = {
   id: string
   user_id: string
@@ -205,6 +215,7 @@ export type Database = {
       goals: TableDef<Goal>
       links: TableDef<LinkRow>
       reviews: TableDef<Review>
+      rates: TableDef<Rate>
     }
     Views: Record<string, never>
     Functions: Record<string, never>

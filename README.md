@@ -35,6 +35,26 @@ Service role-nøkkelen skal aldri inn i dette repoet.
    oppgavene. Se `claude-tasks/README.md`.
 5. `supabase/schema-fase5.sql` gir content_plan rekkevidde per post, som
    format-rangeringen trenger.
+6. `supabase/schema-fase6.sql` lager rates-tabellen for valutakursen.
+
+## Valutakurs, GitHub Action
+
+`.github/workflows/rate.yml` henter EUR/NOK fra ECB via frankfurter.app hver
+morgen og skriver den til `rates`. Den trenger ikke Claude, og bruker
+`claude-tasks/hub.mjs rate`.
+
+Legg inn to nye repo-hemmeligheter under Settings, Secrets and variables,
+Actions:
+
+- `SUPABASE_URL`, samme URL som ellers
+- `SUPABASE_SERVICE_ROLE_KEY`, service role-nøkkelen fra Supabase
+
+Dette er første gang service role-nøkkelen legges i GitHub. Den ligger kun i
+Actions-hemmelighetene, aldri i koden. Kjør jobben manuelt én gang fra
+Actions-fanen for å fylle den første kursen.
+
+Nedtellingen mot 30. september regnes live i appen fra datoen, så den
+trenger ingen jobb.
 
 `schema.sql` kan kjøres på nytt uten å ødelegge data.
 
@@ -101,4 +121,5 @@ Fargene og typografien kommer fra designsystemet i
 - [x] Fase 3, grafer. Periodebryter og alle grafene.
 - [x] Fase 4, Claude inn. De fem oppgavene skriver til Supabase.
 - [x] Fase 5, innhold og økonomi. Innholdsplan som kalender, format-rangering, fakturaregister, forfettario-terskel.
-- [ ] Fase 6, automatikk. GitHub Actions for valutakurs og nedtellinger.
+- [x] Fase 6, automatikk. GitHub Action skriver EUR/NOK daglig. Nedtellingen
+      regnes live i appen. Notion-synk av eiendommer gjenstår som valgfritt.

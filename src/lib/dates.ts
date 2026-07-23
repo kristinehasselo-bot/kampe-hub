@@ -77,3 +77,11 @@ export function formatEur(value: number): string {
 export function formatHours(value: number): string {
   return new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 1 }).format(value)
 }
+
+export function formatNok(value: number): string {
+  return new Intl.NumberFormat('nb-NO', {
+    style: 'currency',
+    currency: 'NOK',
+    maximumFractionDigits: 0,
+  }).format(value)
+}
