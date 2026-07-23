@@ -4,7 +4,8 @@ Schedulert oppgave i claude.ai. Mandag.
 
 Denne er komplett i seg selv og erstatter den forrige versjonen av
 oppgaven. Bytt `TOKEN_HER` med tokenet for KE-review. Det tokenet får kun
-`metrics.write` og `plan.add`, ikke lesetilgang og ikke retroer.
+`metrics.write`, `plan.add`, `plan.recent` og `plan.setreach`. Det kan lese
+innholdsplanen, men ikke kunde-, økonomi- eller retrodata.
 
 Merk: merkevarepaletten under er oppdatert til brandguiden fra juni 2026.
 De gamle fargene, olivengrønn, burgunder og beige, er ute av systemet.
@@ -78,6 +79,45 @@ tall for én konto, send bare den ene raden.
 
 Er raden allerede skrevet, oppdateres den. Du kan trygt sende på nytt med
 rettede tall.
+
+## STEG 1C: Skriv rekkevidde per post
+
+De ukesnivå-tallene over gjelder kontoen samlet. Rekkevidde per post går et
+annet sted, på den enkelte posten i innholdsplanen, så format-rangeringen i
+appen kan vise hva som faktisk når ut.
+
+Gjør dette bare for poster Kristine faktisk publiserte forrige uke og har
+gitt deg rekkeviddetall for. Har du ikke tall per post, hopp over steget.
+
+Først, hent de siste postene så du finner riktig rad å skrive på:
+
+```json
+{ "op": "plan.recent" }
+```
+
+Du får en liste med `id`, `planned_date`, `format`, `theme` og `status`.
+Match hver post Kristine rapporterte mot riktig rad. Bruk tema og dato til å
+være sikker på at du treffer rett post. Er du i tvil om hvilken rad en tall
+hører til, hopp over den posten heller enn å gjette.
+
+Så skriv rekkevidden på id-ene du fant:
+
+```json
+{
+  "op": "plan.setreach",
+  "data": [
+    { "id": "<id fra plan.recent>", "reach": 14200, "engagement_rate": 4.1 }
+  ]
+}
+```
+
+`reach` er totalt antall konti posten nådde. `engagement_rate` er valgfri,
+samme prosenttall som over. Posten settes automatisk til status publisert.
+Maks tolv per kall.
+
+Finner du ingen matchende rad, for eksempel fordi posten aldri lå i planen,
+la den være. Ikke opprett en ny post for den her, det er `plan.add` sin jobb
+og gjelder bare forslag framover.
 
 ## STEG 2: Ekstern analyse (gjøres automatisk via websøk)
 

@@ -102,6 +102,13 @@ function asArray(body: unknown, max: number, what: string): Record<string, unkno
   return body as Record<string, unknown>[]
 }
 
+function isUuid(value: unknown, field: string): string {
+  if (typeof value !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)) {
+    fail(`${field} må være en gyldig id`)
+  }
+  return value as string
+}
+
 // ---------- Databasen ----------
 
 async function rest(path: string, init: RequestInit & { prefer?: string } = {}) {
@@ -134,6 +141,12 @@ const upsert = (table: string, onConflict: string, rows: unknown) =>
     method: 'POST',
     body: JSON.stringify(rows),
     prefer: 'resolution=merge-duplicates,return=representation',
+  })
+
+const patch = (table: string, filter: string, values: unknown) =>
+  rest(`${table}?${filter}`, {
+    method: 'PATCH',
+    body: JSON.stringify(values),
   })
 
 // ---------- Operasjonene ----------
@@ -304,6 +317,58 @@ async function opPlanAdd(body: unknown) {
   return await post('content_plan', rows)
 }
 
+/**
+ * De siste postene i planen, så review kan finne riktig rad å skrive
+ * rekkevidde på. Kun innholdsplanen, ikke kunde- eller økonomidata.
+ * Returnerer id, dato, format, tema og status, nok til å matche mot det
+ * Kristine har oppgitt, uten å gi et lekket token noe verdifullt.
+ */
+async function opPlanRecent() {
+  const cutoff = new Date()
+  cutoff.setDate(cutoff.getDate() - 28)
+  const iso = `${cutoff.getFullYear()}-${String(cutoff.getMonth() + 1).padStart(2, '0')}-${String(cutoff.getDate()).padStart(2, '0')}`
+
+  return await rest(
+    `content_plan?or=(status.eq.publisert,planned_date.gte.${iso})` +
+      `&select=id,planned_date,format,theme,status,reach,engagement_rate` +
+      `&order=planned_date.desc&limit=60`,
+  )
+}
+
+/**
+ * Setter rekkevidde og engasjement på en post review har identifisert,
+ * og markerer den publisert. Kun disse tre feltene kan røres, og bare på
+ * en rad review selv har hentet id-en til via plan.recent.
+ */
+async function opPlanSetReach(body: unknown) {
+  const rows = asArray(body, 12, 'plan.setreach')
+
+  const updated = []
+  for (const row of rows) {
+    const id = isUuid(row.id, 'id')
+    if (row.reach !== undefined && row.reach !== null) {
+      if (typeof row.reach !== 'number' || row.reach < 0) fail('reach må være et tall')
+    }
+    if (row.engagement_rate !== undefined && row.engagement_rate !== null) {
+      if (typeof row.engagement_rate !== 'number' || row.engagement_rate < 0) {
+        fail('engagement_rate må være et tall')
+      }
+    }
+
+    const values = {
+      ...pick(row, ['reach', 'engagement_rate']),
+      // Å ha rekkevidde betyr at posten er ute.
+      status: 'publisert',
+    }
+
+    const result = await patch('content_plan', `id=eq.${id}`, values)
+    if (result.length === 0) fail(`Fant ingen post med id ${id}`)
+    updated.push(...result)
+  }
+
+  return updated
+}
+
 async function opGoalWrite(body: unknown) {
   const rows = asArray(body, 4, 'goal.write').map((row) => {
     if (typeof row.name !== 'string' || row.name.trim() === '') fail('name mangler')
@@ -377,6 +442,12 @@ Deno.serve(async (req) => {
         break
       case 'plan.add':
         result = await opPlanAdd(payload.data)
+        break
+      case 'plan.recent':
+        result = await opPlanRecent()
+        break
+      case 'plan.setreach':
+        result = await opPlanSetReach(payload.data)
         break
       case 'goal.write':
         result = await opGoalWrite(payload.data)

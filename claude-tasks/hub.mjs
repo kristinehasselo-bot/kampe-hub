@@ -140,6 +140,9 @@ const upsert = (table, onConflict, rows) =>
     prefer: 'resolution=merge-duplicates,return=representation',
   })
 
+const patch = (table, filter, values) =>
+  rest(`${table}?${filter}`, { method: 'PATCH', body: values })
+
 // ---------- Datoer, lokal tid ----------
 
 const iso = (d) =>
@@ -256,6 +259,33 @@ async function plan(json) {
   output(await insert('content_plan', JSON.parse(json)))
 }
 
+/** De siste postene, for å finne id å skrive rekkevidde på. */
+async function planRecent() {
+  const cutoff = new Date()
+  cutoff.setDate(cutoff.getDate() - 28)
+  output(
+    await get(
+      `content_plan?or=(status.eq.publisert,planned_date.gte.${iso(cutoff)})` +
+        `&select=id,planned_date,format,theme,status,reach,engagement_rate` +
+        `&order=planned_date.desc&limit=60`,
+    ),
+  )
+}
+
+/** Setter rekkevidde og engasjement på en post, markerer den publisert. */
+async function planSetReach(json) {
+  const rows = JSON.parse(json)
+  const done = []
+  for (const row of rows) {
+    if (!row.id) die('plan:setreach krever id på hver rad.')
+    const values = { status: 'publisert' }
+    if (row.reach != null) values.reach = row.reach
+    if (row.engagement_rate != null) values.engagement_rate = row.engagement_rate
+    done.push(...(await patch('content_plan', `id=eq.${row.id}`, values)))
+  }
+  output(done)
+}
+
 /** Oppdaterer eller oppretter et mål på navn. */
 async function goal(json) {
   const row = JSON.parse(json)
@@ -273,6 +303,8 @@ const commands = {
   review: () => review(payload),
   metrics: () => metrics(payload),
   plan: () => plan(payload),
+  'plan:recent': () => planRecent(),
+  'plan:setreach': () => planSetReach(payload),
   goal: () => goal(payload),
 }
 
