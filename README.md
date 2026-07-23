@@ -36,6 +36,8 @@ Service role-nøkkelen skal aldri inn i dette repoet.
 5. `supabase/schema-fase5.sql` gir content_plan rekkevidde per post, som
    format-rangeringen trenger.
 6. `supabase/schema-fase6.sql` lager rates-tabellen for valutakursen.
+7. `supabase/schema-notion.sql` gir properties en unik nøkkel så
+   Notion-synken kan oppdatere i stedet for å duplisere.
 
 ## Valutakurs, GitHub Action
 
@@ -122,4 +124,4 @@ Fargene og typografien kommer fra designsystemet i
 - [x] Fase 4, Claude inn. De fem oppgavene skriver til Supabase.
 - [x] Fase 5, innhold og økonomi. Innholdsplan som kalender, format-rangering, fakturaregister, forfettario-terskel.
 - [x] Fase 6, automatikk. GitHub Action skriver EUR/NOK daglig. Nedtellingen
-      regnes live i appen. Notion-synk av eiendommer gjenstår som valgfritt.
+      regnes live i appen. Notion-synk av eiendommer via en sjette oppgave.

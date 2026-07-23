@@ -369,6 +369,32 @@ async function opPlanSetReach(body: unknown) {
   return updated
 }
 
+/**
+ * Speiler godkjente eiendommer fra Notion. Notion-sidens URL er nøkkelen,
+ * så en eiendom som allerede finnes oppdateres. Kun kjernefeltene tas
+ * inn, resten av Notion-basen er ikke appens ansvar.
+ */
+async function opPropertiesUpsert(body: unknown) {
+  const rows = asArray(body, 60, 'properties.upsert').map((row) => {
+    if (typeof row.title !== 'string' || row.title.trim() === '') fail('title mangler')
+    if (typeof row.notion_url !== 'string' || row.notion_url.trim() === '') {
+      fail('notion_url kreves, den er nøkkelen synken oppdaterer på')
+    }
+
+    return pick(row, [
+      'title',
+      'area',
+      'price_eur',
+      'sqm',
+      'status',
+      'listing_url',
+      'notion_url',
+    ])
+  })
+
+  return await upsert('properties', 'user_id,notion_url', rows)
+}
+
 async function opGoalWrite(body: unknown) {
   const rows = asArray(body, 4, 'goal.write').map((row) => {
     if (typeof row.name !== 'string' || row.name.trim() === '') fail('name mangler')
@@ -448,6 +474,9 @@ Deno.serve(async (req) => {
         break
       case 'plan.setreach':
         result = await opPlanSetReach(payload.data)
+        break
+      case 'properties.upsert':
+        result = await opPropertiesUpsert(payload.data)
         break
       case 'goal.write':
         result = await opGoalWrite(payload.data)

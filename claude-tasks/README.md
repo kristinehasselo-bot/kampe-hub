@@ -11,6 +11,7 @@ resultatet havner i Supabase i stedet for i en artifact.
 | [3-ke-ukentlig-review.md](3-ke-ukentlig-review.md) | mandag | `metrics.write`, `plan.add`, `plan.recent`, `plan.setreach` |
 | [4-manedsgjennomgang.md](4-manedsgjennomgang.md) | siste dag i måneden | `context`, `goal.write`, retro `måned` |
 | [5-kvartalsgjennomgang.md](5-kvartalsgjennomgang.md) | hvert kvartal | `context`, `goal.write`, retro `kvartal` |
+| [6-eiendommer-notion.md](6-eiendommer-notion.md) | daglig | `properties.upsert` |
 
 ## Hvordan de skriver
 
@@ -74,11 +75,15 @@ egne tokens satt inn:
   "TOKEN2": { "name": "ukesretro", "ops": ["context", "review.write", "goal.write"], "periods": ["uke"] },
   "TOKEN3": { "name": "ke-review", "ops": ["metrics.write", "plan.add", "plan.recent", "plan.setreach"] },
   "TOKEN4": { "name": "manedsgjennomgang", "ops": ["context", "review.write", "goal.write"], "periods": ["måned"] },
-  "TOKEN5": { "name": "kvartalsgjennomgang", "ops": ["context", "review.write", "goal.write"], "periods": ["kvartal"] }
+  "TOKEN5": { "name": "kvartalsgjennomgang", "ops": ["context", "review.write", "goal.write"], "periods": ["kvartal"] },
+  "TOKEN6": { "name": "notion-properties", "ops": ["properties.upsert"] }
 }
 ```
 
 Du trenger ikke sette `SUPABASE_SERVICE_ROLE_KEY`. Den er der allerede.
+
+Notion-synken (oppgave 6) trenger i tillegg at Notion-koblingen er aktiv i
+den oppgaven, siden den leser eiendomsdatabasen direkte fra Notion.
 
 **4. Deploy funksjonen:**
 

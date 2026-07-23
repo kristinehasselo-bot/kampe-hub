@@ -326,6 +326,15 @@ async function rate() {
   )
 }
 
+/** Speiler godkjente eiendommer fra Notion. Upsert på notion_url. */
+async function properties(json) {
+  const rows = JSON.parse(json)
+  for (const row of rows) {
+    if (!row.title || !row.notion_url) die('hver eiendom krever title og notion_url.')
+  }
+  output(await upsert('properties', 'user_id,notion_url', rows))
+}
+
 // ---------- Kjøring ----------
 
 const [, , command, payload] = process.argv
@@ -340,6 +349,7 @@ const commands = {
   'plan:setreach': () => planSetReach(payload),
   goal: () => goal(payload),
   rate: () => rate(),
+  properties: () => properties(payload),
 }
 
 try {
