@@ -1,7 +1,9 @@
 import type {
   Area,
   Bucket,
+  ContentPlanItem,
   GrowthItem,
+  InvoiceStatus,
   MandateStage,
   Milestone,
   TaskCategory,
@@ -74,3 +76,24 @@ export const DUE_SOON_DAYS = 7
 export const REVENUE_GOAL_NAME = 'Månedlig fakturert'
 export const REVENUE_GOAL_FLOOR_EUR = 3500
 export const REVENUE_GOAL_CEILING_EUR = 7000
+
+/**
+ * Taket i regime forfettario. Over dette faller den flate skattesatsen
+ * bort og hun må over på ordinær beskatning. Årlig, ikke per periode.
+ */
+export const FORFETTARIO_CEILING_EUR = 85_000
+
+export const INVOICE_STATUSES: InvoiceStatus[] = ['utkast', 'sendt', 'betalt', 'forfalt']
+
+export const CONTENT_FORMATS: NonNullable<ContentPlanItem['format']>[] = [
+  'reel',
+  'karusell',
+  'enkeltbilde',
+]
+
+export const CONTENT_STATUSES: ContentPlanItem['status'][] = [
+  'idé',
+  'produseres',
+  'klar',
+  'publisert',
+]

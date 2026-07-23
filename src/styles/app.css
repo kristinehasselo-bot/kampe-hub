@@ -661,6 +661,192 @@
   padding-top: var(--space-1);
 }
 
+/* ---------- Innholdskalender ---------- */
+
+.calendar__head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  margin-bottom: var(--space-4);
+}
+
+.calendar__title {
+  font-family: var(--font-display);
+  font-size: var(--text-display-sm);
+  font-style: italic;
+  min-width: 11rem;
+  text-align: center;
+}
+
+.calendar__nav {
+  width: 2rem;
+  height: 2rem;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-size: var(--text-lg);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.calendar__nav:hover {
+  border-color: var(--accent);
+}
+
+.calendar__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  margin-bottom: var(--space-1);
+}
+
+.calendar__weekday {
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: center;
+  padding-bottom: var(--space-1);
+}
+
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--line-subtle);
+  border: 1px solid var(--line-subtle);
+}
+
+.calendar__cell {
+  background: var(--canvas);
+  min-height: 6.5rem;
+  padding: var(--space-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.calendar__cell--empty {
+  background: var(--plaster);
+}
+
+.calendar__cell--today {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.calendar__day {
+  align-self: flex-end;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.calendar__day:hover {
+  background: var(--plaster);
+  color: var(--ink);
+}
+
+.calendar__posts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.post {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 1px;
+  padding: 2px var(--space-2);
+  border: 0;
+  border-left: 2px solid var(--cypress);
+  background: var(--plaster);
+  cursor: pointer;
+  width: 100%;
+}
+
+.post:hover {
+  background: var(--travertine);
+}
+
+.post__format {
+  font-size: 0.5625rem;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.post__theme {
+  font-size: var(--text-xs);
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Statusfargen bæres av venstrekanten. Idé er svakest, publisert sterkest. */
+.post--ide {
+  border-left-color: var(--line);
+}
+.post--produseres {
+  border-left-color: var(--ochre);
+}
+.post--klar {
+  border-left-color: var(--majolica);
+}
+.post--publisert {
+  border-left-color: var(--cypress);
+}
+
+/* ---------- Forfettario ---------- */
+
+.forfettario__row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-bottom: var(--space-5);
+}
+
+.forfettario__right {
+  text-align: right;
+}
+
+.progress__paid--near {
+  background: var(--ochre);
+}
+
+/* ---------- Fakturamerker ---------- */
+
+.badge--inv-betalt {
+  border-color: var(--cypress);
+  color: var(--cypress);
+}
+.badge--inv-sendt {
+  border-color: var(--majolica);
+  color: var(--majolica);
+}
+.badge--inv-utkast {
+  border-color: var(--line);
+  color: var(--text-muted);
+}
+.badge--inv-forfalt {
+  border-color: var(--ochre);
+  color: var(--ochre);
+}
+
+.form-hint {
+  margin-top: var(--space-4);
+}
+
 /* ---------- Nedtelling ---------- */
 
 .countdown {
@@ -1266,6 +1452,26 @@
 
   .progress__figures {
     gap: var(--space-6);
+  }
+
+  /* Kalenderen krymper, men beholder rutenettet. Temateksten skjules
+     på de smaleste skjermene, fargekanten og formatet forteller nok. */
+  .calendar__cell {
+    min-height: 4rem;
+    padding: 2px;
+  }
+
+  .post__theme {
+    display: none;
+  }
+
+  .calendar__title {
+    min-width: 8rem;
+    font-size: var(--text-lg);
+  }
+
+  .forfettario__row {
+    gap: var(--space-4);
   }
 
   .nav__top {

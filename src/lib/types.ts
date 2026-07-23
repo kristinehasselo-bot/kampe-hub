@@ -159,6 +159,8 @@ export type ContentPlanItem = {
   status: 'idé' | 'produseres' | 'klar' | 'publisert'
   canva_url: string | null
   notion_url: string | null
+  reach: number | null
+  engagement_rate: number | null
 }
 
 export type Property = {

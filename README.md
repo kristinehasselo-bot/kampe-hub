@@ -31,6 +31,10 @@ Service role-nøkkelen skal aldri inn i dette repoet.
 2. Samme sted, lim inn `supabase/seed.sql`, rediger lenkene, kjør.
 3. `supabase/seed-milepaeler.sql` legger inn P.IVA, FIF Sezione G,
    oppdragsavtalen og Impatriati på Admin-siden.
+4. `supabase/schema-fase4.sql` gjør basen skrivbar for de schedulerte
+   oppgavene. Se `claude-tasks/README.md`.
+5. `supabase/schema-fase5.sql` gir content_plan rekkevidde per post, som
+   format-rangeringen trenger.
 
 `schema.sql` kan kjøres på nytt uten å ødelegge data.
 
@@ -96,5 +100,5 @@ Fargene og typografien kommer fra designsystemet i
 - [x] Fase 2, struktur. Oppgaver, mandater, milepæler, fanene Jobb og Privat.
 - [x] Fase 3, grafer. Periodebryter og alle grafene.
 - [x] Fase 4, Claude inn. De fem oppgavene skriver til Supabase.
-- [ ] Fase 5, innhold og økonomi.
+- [x] Fase 5, innhold og økonomi. Innholdsplan som kalender, format-rangering, fakturaregister, forfettario-terskel.
 - [ ] Fase 6, automatikk. GitHub Actions for valutakurs og nedtellinger.
