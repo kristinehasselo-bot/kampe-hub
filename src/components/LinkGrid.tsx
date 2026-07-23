@@ -1,6 +1,22 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { MANUAL_URL } from '../lib/constants'
 import type { LinkRow } from '../lib/types'
+
+// Brukermanualen er ikke en vanlig lenke i databasen, den festes til
+// admin-gruppen i koden så den alltid ligger der, uansett hva som er
+// seedet. sort_order -1 holder den øverst i gruppen.
+const PINNED: LinkRow[] = [
+  {
+    id: 'pinned-manual',
+    user_id: '',
+    created_at: '',
+    label: 'Brukermanual',
+    url: MANUAL_URL,
+    category: 'admin',
+    sort_order: -1,
+  },
+]
 
 export function LinkGrid() {
   const [links, setLinks] = useState<LinkRow[]>([])
@@ -26,25 +42,20 @@ export function LinkGrid() {
     }
   }, [])
 
-  const groups = links.reduce<Record<string, LinkRow[]>>((acc, link) => {
+  if (loading) return null
+
+  // Fest manualen inn, men bare hvis den ikke allerede finnes i basen.
+  const hasManual = links.some((l) => l.url === MANUAL_URL)
+  const all = hasManual ? links : [...PINNED, ...links]
+
+  const groups = all.reduce<Record<string, LinkRow[]>>((acc, link) => {
     ;(acc[link.category] ??= []).push(link)
     return acc
   }, {})
 
-  if (loading) return null
-
-  if (links.length === 0) {
-    return (
-      <section className="panel">
-        <header className="panel__head">
-          <p className="section-label">Lenker</p>
-        </header>
-        <p className="muted">
-          Ingen lenker enda. Legg dem inn i links-tabellen i Supabase, så dukker de opp
-          gruppert etter kategori.
-        </p>
-      </section>
-    )
+  // Innenfor hver gruppe: sorter på sort_order, så den festede havner øverst.
+  for (const items of Object.values(groups)) {
+    items.sort((a, b) => a.sort_order - b.sort_order)
   }
 
   return (

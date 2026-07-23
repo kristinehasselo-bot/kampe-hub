@@ -13,6 +13,9 @@ import type {
 /** Eneste konto som får logge inn. */
 export const ALLOWED_EMAIL = 'kristine@kampeestates.com'
 
+/** Brukermanualen, hostet som artifact. Vises fast på Admin-siden. */
+export const MANUAL_URL = 'https://claude.ai/code/artifact/343d2ae3-6eed-41c2-95be-ed05cb66782d'
+
 export const BUCKETS: { key: Bucket; label: string; hint: string }[] = [
   { key: 'biz_dev', label: 'Forretningsutvikling', hint: 'Nye kunder, partnere, posisjon' },
   { key: 'client', label: 'Kunde', hint: 'Mandater, visninger, oppfølging' },
