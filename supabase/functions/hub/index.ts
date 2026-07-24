@@ -171,7 +171,7 @@ const AREAS = ['jobb', 'privat']
 const TASK_CATEGORIES = ['kunde', 'admin', 'innhold', 'økonomi', 'vekst']
 const PERIOD_TYPES = ['dag', 'uke', 'måned', 'kvartal', 'år']
 const ACCOUNTS = ['kampeestates', 'kristinehasselo']
-const FORMATS = ['reel', 'karusell', 'enkeltbilde']
+const FORMATS = ['reel', 'karusell', 'enkeltbilde', 'newsletter']
 
 async function opContext() {
   const monday = new Date()

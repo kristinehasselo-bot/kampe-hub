@@ -12,6 +12,7 @@ const FORMAT_SHORT: Record<string, string> = {
   reel: 'Reel',
   karusell: 'Karusell',
   enkeltbilde: 'Bilde',
+  newsletter: 'Nyhetsbrev',
 }
 
 /**

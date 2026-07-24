@@ -92,6 +92,7 @@ export const CONTENT_FORMATS: NonNullable<ContentPlanItem['format']>[] = [
   'reel',
   'karusell',
   'enkeltbilde',
+  'newsletter',
 ]
 
 export const CONTENT_STATUSES: ContentPlanItem['status'][] = [

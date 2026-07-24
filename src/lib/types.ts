@@ -153,7 +153,7 @@ export type ContentPlanItem = {
   user_id: string
   created_at: string
   planned_date: string | null
-  format: 'reel' | 'karusell' | 'enkeltbilde' | null
+  format: 'reel' | 'karusell' | 'enkeltbilde' | 'newsletter' | null
   theme: string | null
   caption_dir: string | null
   status: 'idé' | 'produseres' | 'klar' | 'publisert'
