@@ -81,6 +81,22 @@ function pick<T extends Record<string, unknown>>(row: T, fields: string[]) {
   return out
 }
 
+/**
+ * PostgREST krever at alle rader i en bulk-skriving har nøyaktig samme
+ * felter. pick() dropper tomme felter, så en rad med frist og en uten
+ * får ulike nøkler og hele skrivingen avvises. Denne fyller unionen av
+ * alle nøkler med null der en rad mangler dem, så settet blir likt.
+ */
+function uniform(rows: Record<string, unknown>[]): Record<string, unknown>[] {
+  const keys = new Set<string>()
+  for (const row of rows) for (const key of Object.keys(row)) keys.add(key)
+  return rows.map((row) => {
+    const out: Record<string, unknown> = {}
+    for (const key of keys) out[key] = key in row ? row[key] : null
+    return out
+  })
+}
+
 function oneOf(value: unknown, allowed: string[], field: string) {
   if (value === undefined) return
   if (typeof value !== 'string' || !allowed.includes(value)) {
@@ -245,7 +261,7 @@ async function opTasksAdd(body: unknown) {
     return { lagtTil: 0, hoppetOver: clean.length }
   }
 
-  const rows = await post('tasks', fresh)
+  const rows = await post('tasks', uniform(fresh))
   return { lagtTil: rows.length, hoppetOver: clean.length - fresh.length, rows }
 }
 
@@ -292,7 +308,7 @@ async function opMetricsWrite(body: unknown) {
     ])
   })
 
-  return await upsert('content_metrics', 'user_id,week_start,account', rows)
+  return await upsert('content_metrics', 'user_id,week_start,account', uniform(rows))
 }
 
 async function opPlanAdd(body: unknown) {
@@ -314,7 +330,7 @@ async function opPlanAdd(body: unknown) {
     }
   })
 
-  return await post('content_plan', rows)
+  return await post('content_plan', uniform(rows))
 }
 
 /**
@@ -392,7 +408,7 @@ async function opPropertiesUpsert(body: unknown) {
     ])
   })
 
-  return await upsert('properties', 'user_id,notion_url', rows)
+  return await upsert('properties', 'user_id,notion_url', uniform(rows))
 }
 
 async function opGoalWrite(body: unknown) {
@@ -411,7 +427,7 @@ async function opGoalWrite(body: unknown) {
     ])
   })
 
-  return await upsert('goals', 'user_id,name', rows)
+  return await upsert('goals', 'user_id,name', uniform(rows))
 }
 
 // ---------- Ruting ----------
