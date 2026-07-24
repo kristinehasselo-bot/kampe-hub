@@ -171,10 +171,20 @@ async function syncProperties() {
 
 // ---------- Kjøring ----------
 
-try {
-  if (only !== 'props') await syncContent()
-  if (only !== 'content') await syncProperties()
-} catch (err) {
-  console.error(err instanceof Error ? err.message : err)
-  process.exitCode = 1
+// Innhold og eiendommer kjøres uavhengig, så en feil på den ene ikke
+// skjuler den andre. Begge feilene skrives ut.
+let failed = false
+
+async function runOne(name, fn) {
+  try {
+    await fn()
+  } catch (err) {
+    failed = true
+    console.error(`${name} feilet: ${err instanceof Error ? err.message : err}`)
+  }
 }
+
+if (only !== 'props') await runOne('Innhold', syncContent)
+if (only !== 'content') await runOne('Eiendommer', syncProperties)
+
+if (failed) process.exitCode = 1
